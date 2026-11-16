@@ -236,7 +236,7 @@ let hist=store.get('hist',[]),cur=null,busy=false;
 function openChat(prompt,title){cur={id:Date.now(),title:title||'Новый диалог',fav:false,msgs:[]};hist.unshift(cur);$('#ctitle').textContent=cur.title;$('#msgs').innerHTML='';addMsg('a','Привет! Я Xpay. Спрашивай — отвечу, помогу с кодом, учёбой и идеями.',true);$('#chat').classList.add('on');if(prompt)send(prompt);else $('#cin').focus()}
 function resume(id){cur=hist.find(h=>h.id===id);$('#ctitle').textContent=cur.title;$('#msgs').innerHTML='';cur.msgs.forEach(m=>addMsg(m.r,m.t,true));$('#chat').classList.add('on')}
 function addMsg(r,t,skip){const d=document.createElement('div');d.className='m '+r;d.textContent=t;$('#msgs').appendChild(d);$('#msgs').scrollTop=1e9;if(!skip&&cur){cur.msgs.push({r,t});store.set('hist',hist)}return d}
-const PROXY='https://xpay-.nurmuhambet183.workers.dev/'; // адрес вашего сервера (см. worker.js)
+const PROXY='https://batya.nurmuhambet183.workers.dev/'; // адрес вашего сервера (см. worker.js)
 let pend=null;
 async function askAI(){
  const contents=cur.msgs.map(m=>({role:m.r==='u'?'user':'model',parts:[{text:m.t}]}));
