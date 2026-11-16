@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Xpay — ИИ-ассистент</title>
+<style>
+:root{color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--a:#3b8bff;--b:#9b4dff;--bg:#05031a;--glass:rgba(20,22,70,.55);--line:rgba(90,130,255,.45);--tx:#eaf0ff;--mut:#8f9ad0}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body[data-theme=neon]{--a:#00e5c8;--b:#ff3dca;--line:rgba(0,229,200,.45);--glass:rgba(10,40,50,.55);--bg:#02121a}
+body[data-theme=dark]{--a:#8a8fa8;--b:#5d6078;--line:rgba(160,165,190,.35);--glass:rgba(30,30,40,.6);--bg:#08080c}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;height:100%;background:#000;color:var(--tx);font-family:"Manrope","Segoe UI",system-ui,sans-serif;display:flex;justify-content:center}
+.app{position:relative;width:100%;max-width:440px;height:100dvh;overflow:hidden;background:radial-gradient(ellipse at 20% 0%,#2a1a6e55,transparent 55%),radial-gradient(ellipse at 100% 40%,#0b3a8a55,transparent 50%),var(--bg);display:flex;flex-direction:column}
+.stars{position:absolute;inset:0;background-image:radial-gradient(1px 1px at 20px 30px,#fff8,transparent),radial-gradient(1px 1px at 120px 90px,#fff6,transparent),radial-gradient(1.5px 1.5px at 260px 50px,#fff9,transparent),radial-gradient(1px 1px at 340px 160px,#fff7,transparent),radial-gradient(1px 1px at 60px 220px,#fff5,transparent);background-size:380px 260px;opacity:.7;pointer-events:none}
+.planet{position:absolute;border-radius:50%;pointer-events:none}
+.p1{width:150px;height:150px;right:-60px;top:70px;background:radial-gradient(circle at 30% 30%,#3a5fd0,#0a1030 70%);opacity:.7}
+.p2{width:90px;height:90px;left:-45px;top:230px;background:radial-gradient(circle at 70% 30%,#6a3fd0,#0a0a30 70%);opacity:.7}
+header{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;padding:12px 14px 0}
+.glass{background:var(--glass);border:1px solid var(--line);border-radius:18px;backdrop-filter:blur(10px);box-shadow:0 0 18px -6px var(--a) inset,0 0 14px -8px var(--a)}
+.ib{width:46px;height:46px;display:grid;place-items:center;color:var(--tx);font-size:20px;border-radius:16px;cursor:pointer}
+.logo{text-align:center;line-height:1}
+.logo b{font-size:34px;font-weight:800;letter-spacing:-1px;background:linear-gradient(90deg,var(--a),var(--b));-webkit-background-clip:text;background-clip:text;color:transparent}
+.logo small{display:block;color:var(--mut);font-size:12px;margin-top:2px}
+.st{display:flex;align-items:center;gap:6px;padding:0 10px;height:38px;border-radius:19px;font-size:13px}
+.dot{width:9px;height:9px;border-radius:50%;background:#2ee66b;box-shadow:0 0 8px #2ee66b}
+.crown{color:#ffc24a;border-color:#ffb02e;box-shadow:0 0 16px -2px #ffb02e}
+main{position:relative;z-index:2;flex:1;overflow-y:auto;overflow-x:hidden;padding:10px 14px 16px;scrollbar-width:none}
+main::-webkit-scrollbar{display:none}
+.scr{display:none}.scr.on{display:block}
+.row{display:flex;gap:10px}
+.chip{flex:1;display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:16px;font-size:14px}
+.chip small{display:block;color:var(--mut);font-size:11px}
+.tick{margin-left:auto;width:20px;height:20px;border-radius:50%;background:#2ee66b;color:#041;display:grid;place-items:center;font-size:12px;font-weight:800}
+.sw{margin-left:auto;width:42px;height:24px;border-radius:12px;background:#333;position:relative;cursor:pointer;flex:none;transition:.2s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.2s}
+.sw.on{background:linear-gradient(90deg,var(--b),var(--a))}.sw.on::after{left:21px}
+/* AI core */
+.stage{position:relative;height:250px;display:grid;place-items:center;margin-top:2px}
+.core{position:relative;width:170px;height:170px;border-radius:50%;cursor:pointer;display:grid;place-items:center;
+background:radial-gradient(circle at 35% 30%,#ffffff33,transparent 40%),radial-gradient(circle,#0a0f40 40%,#1b3cff55 70%,#6a3dff66);
+box-shadow:0 0 50px 6px var(--a),0 0 100px 10px #6a3dff55,inset 0 0 40px #5aa0ff66;animation:idle 4s ease-in-out infinite}
+.core .x{font-size:84px;font-weight:800;background:linear-gradient(135deg,#8fd0ff,var(--b));-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1;transition:.3s}
+.ring{position:absolute;border-radius:50%;border:2px solid var(--a);box-shadow:0 0 12px var(--a);pointer-events:none}
+.r1{width:290px;height:96px;transform:rotate(-12deg);animation:spin1 9s linear infinite}
+.r2{width:250px;height:80px;border-color:var(--b);box-shadow:0 0 12px var(--b);transform:rotate(14deg);animation:spin2 12s linear infinite}
+.base{position:absolute;bottom:4px;width:260px;height:34px;border-radius:50%;border:2px solid var(--a);box-shadow:0 0 24px var(--a),inset 0 0 20px var(--a);opacity:.8}
+@keyframes idle{50%{transform:scale(1.04)}}
+@keyframes spin1{to{transform:rotate(348deg)}}
+@keyframes spin2{to{transform:rotate(-346deg)}}
+@keyframes think{to{transform:rotate(360deg)}}
+@keyframes talk{0%,100%{transform:scale(1)}30%{transform:scale(1.1)}60%{transform:scale(.97)}}
+@keyframes listen{0%{box-shadow:0 0 40px 4px var(--a),0 0 0 0 #3b8bff88}100%{box-shadow:0 0 40px 4px var(--a),0 0 0 40px #3b8bff00}}
+.s-think .r1{animation:spin1 1.6s linear infinite}.s-think .r2{animation:spin2 1.1s linear infinite}
+.s-think .x{animation:think 1.4s linear infinite}
+.s-speak{animation:talk .7s ease-in-out infinite!important}
+.s-speak .r1,.s-speak .r2{animation-duration:3s}
+.s-listen{animation:listen 1.2s ease-out infinite!important}
+.s-listen .core,.s-listen.core{filter:hue-rotate(40deg)}
+.state{text-align:center;font-size:12px;color:var(--mut);height:16px;margin-top:-6px}
+.hello{display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:34px;margin:12px 0}
+.hello h2{margin:0;font-size:20px}.hello p{margin:2px 0 0;color:#b9c5ff;font-size:15px;line-height:1.3}
+.bars{display:flex;gap:3px;align-items:center;height:36px}
+.bars i{width:3px;border-radius:2px;background:var(--a);animation:bar 1.1s ease-in-out infinite}
+.bars i:nth-child(1){height:14px}.bars i:nth-child(2){height:30px;animation-delay:.15s}.bars i:nth-child(3){height:22px;animation-delay:.3s}.bars i:nth-child(4){height:34px;animation-delay:.45s}.bars i:nth-child(5){height:16px;animation-delay:.6s}
+@keyframes bar{50%{transform:scaleY(.45)}}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tile{padding:12px 8px;border-radius:18px;display:flex;align-items:center;gap:8px;font-size:13.5px;line-height:1.15;cursor:pointer;min-height:64px;background:linear-gradient(160deg,#1f3fd066,#0a0f4066);transition:transform .15s}
+.tile:active{transform:scale(.96)}
+.tile em{font-style:normal;font-size:26px}.tile span{flex:1}.tile u{text-decoration:none;color:var(--mut)}
+.voice{margin-top:14px;padding:14px 12px 10px;border-radius:40px;text-align:center}
+.vrow{display:flex;align-items:center;justify-content:space-between}
+.mic{width:76px;height:76px;border-radius:50%;border:2px solid var(--a);display:grid;place-items:center;font-size:30px;cursor:pointer;background:radial-gradient(circle,#4b3bff,#10124a);box-shadow:0 0 24px var(--a)}
+.wave{display:flex;gap:3px;align-items:center;height:50px}
+.wave i{width:3px;border-radius:2px;background:var(--a)}
+.wave.r i{background:var(--b)}
+.voice p{margin:8px 0 0;font-size:14px;color:#b9c5ff}
+nav{position:relative;z-index:3;display:flex;margin:0 10px 10px;padding:8px 4px;border-radius:30px;justify-content:space-around}
+nav button{background:none;border:0;color:var(--mut);display:flex;flex-direction:column;align-items:center;gap:2px;font:inherit;font-size:11px;cursor:pointer;padding:2px 4px;min-width:60px}
+nav button span{font-size:26px;filter:grayscale(1) brightness(1.4)}
+nav button.on{color:#fff}nav button.on span{filter:drop-shadow(0 0 8px var(--a))}
+h3{margin:6px 2px 12px;font-size:22px}
+.list{display:flex;flex-direction:column;gap:10px}
+.item{padding:14px;border-radius:18px;display:flex;gap:12px;align-items:center;cursor:pointer}
+.item em{font-style:normal;font-size:26px}.item div{flex:1}.item b{display:block;font-size:15px}.item small{color:var(--mut);font-size:12.5px}
+.prog{height:6px;border-radius:3px;background:#ffffff18;margin-top:8px;overflow:hidden}.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--a),var(--b));border-radius:3px}
+input,select,textarea{font:inherit;color:var(--tx);background:#0a0d3a99;border:1px solid var(--line);border-radius:14px;padding:12px;width:100%;outline:none}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--a);outline-offset:2px}
+.btn{background:linear-gradient(90deg,var(--a),var(--b));border:0;color:#fff;font:inherit;font-weight:700;border-radius:14px;padding:12px 16px;cursor:pointer}
+.sec{margin:14px 2px 6px;color:var(--mut);font-size:13px}
+.set{padding:12px 14px;border-radius:16px;display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:14.5px}
+.set label{flex:1}.set select{width:auto;padding:8px}
+.themes{display:flex;gap:8px;margin-bottom:8px}.themes button{flex:1;padding:12px;border-radius:14px;border:1px solid var(--line);background:var(--glass);color:var(--tx);font:inherit;cursor:pointer}
+.themes button.on{border-color:#fff}
+/* chat */
+.chat{position:absolute;inset:0;z-index:10;background:var(--bg);display:none;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+.chat.on{display:flex}
+.ch{display:flex;align-items:center;gap:10px;padding:10px 14px}
+.mini{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:22px;background:radial-gradient(circle at 35% 30%,#ffffff33,#0a0f40 55%);box-shadow:0 0 18px var(--a)}
+.ch b{display:block}.ch small{color:var(--mut)}
+.msgs{flex:1;overflow-y:auto;padding:8px 14px;display:flex;flex-direction:column;gap:10px}
+.m{max-width:85%;padding:11px 14px;border-radius:18px;font-size:15px;line-height:1.4;white-space:pre-wrap}
+.m.u{align-self:flex-end;background:linear-gradient(90deg,#2b5bff,#7a3dff);border-bottom-right-radius:6px}
+.m.a{align-self:flex-start;background:var(--glass);border:1px solid var(--line);border-bottom-left-radius:6px}
+.inp{display:flex;gap:8px;padding:10px 12px calc(12px + env(safe-area-inset-bottom,0px))}
+.inp .ib{flex:none;width:48px;height:48px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+.i{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.125em;flex:none}.tick .i{stroke-width:3}
+</style>
+</head>
+<body data-theme="cosmos"><svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></symbol><symbol id="i-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></symbol><symbol id="i-cap" viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5zM6 11.5V16c0 1.5 3 3 6 3s6-1.5 6-3v-4.5"/></symbol><symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></symbol><symbol id="i-chart" viewBox="0 0 24 24"><path d="M5 20V11M12 20V4M19 20v-6"/></symbol><symbol id="i-pal" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.500 0 2-1 1.500-2-.6-1.200.2-2.500 1.600-2.500H17a4 4 0 0 0 4-4c0-5-4-9.500-9-9.500z"/><circle cx="7.500" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="15" cy="7" r="1"/></symbol><symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 6a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol><symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"/></symbol><symbol id="i-planet" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M3 15c-1-2 4-6 10-8s10-1.500 8 2c-1 2-6 6-12 8-3 1-5.500.5-6-2z"/></symbol><symbol id="i-cube" viewBox="0 0 24 24"><path d="M12 3l8 4.500v9L12 21l-8-4.500v-9zM4 7.500l8 4.500 8-4.500M12 12v9"/></symbol><symbol id="i-hist" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.700L3 8M3 3v5h5M12 7v5l3 2"/></symbol><symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.900 4.900L7 7M17 17l2.100 2.100M4.900 19.100L7 17M17 7l2.100-2.100"/></symbol><symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol><symbol id="i-crown" viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></symbol><symbol id="i-kbd" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></symbol><symbol id="i-scan" viewBox="0 0 24 24"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></symbol><symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></symbol><symbol id="i-send" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.500l4.500 4.500L19 7"/></symbol><symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol><symbol id="i-back" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol><symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.700 5.600 6.100.9-4.400 4.300 1 6.100L12 17l-5.400 2.900 1-6.100L3.200 9.500l6.100-.9z"/></symbol><symbol id="i-starf" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3l2.700 5.600 6.100.9-4.400 4.300 1 6.100L12 17l-5.400 2.900 1-6.100L3.200 9.500l6.100-.9z"/></symbol></svg><input type="file" id="file" hidden accept="image/*,.pdf,.txt,.md,.csv,.json">
+<div class="app">
+<div class="stars"></div><div class="planet p1"></div><div class="planet p2"></div>
+
+<header>
+  <div class="glass ib" id="menu" title="Меню"><svg class="i"><use href="#i-menu"/></svg></div>
+  <div class="logo"><b>Xpay</b><small>AI Assistant</small></div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <div class="glass st"><i class="dot"></i>Online</div>
+    <div class="glass ib crown" style="width:44px;height:44px"><svg class="i"><use href="#i-crown"/></svg></div>
+  </div>
+</header>
+
+<main>
+<!-- ГЛАВНАЯ -->
+<section class="scr on" id="home">
+  <div class="row">
+    <div class="glass chip"><span style="font-size:24px;color:#4a8cff"><svg class="i"><use href="#i-cube"/></svg></span><div>ИИ-ядро<small id="gst">Подключено</small></div><i class="tick"><svg class="i"><use href="#i-check"/></svg></i></div>
+    <div class="glass chip"><span style="font-size:24px;color:#b36bff"><svg class="i"><use href="#i-bolt"/></svg></span><div style="font-size:13px">Ultra Mode<small>Активен</small></div><div class="sw on" id="ultra"></div></div>
+  </div>
+  <div class="stage">
+    <div class="ring r1"></div><div class="ring r2"></div>
+    <div class="core" id="core"><div class="x">X</div></div>
+    <div class="base"></div>
+  </div>
+  <div class="state" id="state">Ожидание</div>
+  <div class="glass hello"><div class="bars"><i></i><i></i><i></i><i></i><i></i></div><div><h2>Привет, Нурмухамбет!</h2><p>Я — Xpay, твой ИИ-ассистент.<br>Чем могу помочь?</p></div></div>
+  <div class="grid" id="quick"></div>
+  <div class="glass voice">
+    <div class="vrow">
+      <div class="glass ib" id="kbd" style="width:52px;height:52px"><svg class="i"><use href="#i-kbd"/></svg></div>
+      <div class="wave" id="w1"></div>
+      <div class="mic" id="mic"><svg class="i"><use href="#i-mic"/></svg></div>
+      <div class="wave r" id="w2"></div>
+      <div class="glass ib" id="cam" style="width:52px;height:52px"><svg class="i"><use href="#i-scan"/></svg></div>
+    </div>
+    <p id="vtxt">Говорите или напишите сообщение…</p>
+  </div>
+</section>
+
+<!-- ВОЗМОЖНОСТИ -->
+<section class="scr" id="feat"><h3>Возможности</h3><div class="list" id="featList"></div></section>
+
+<!-- ПРОЕКТЫ -->
+<section class="scr" id="proj">
+  <h3>Проекты</h3>
+  <div class="row" style="margin-bottom:12px"><input id="pname" placeholder="Название нового проекта"><button class="btn" id="padd">Создать</button></div>
+  <div class="list" id="projList"></div>
+</section>
+
+<!-- ИСТОРИЯ -->
+<section class="scr" id="hist">
+  <h3>История</h3>
+  <input id="hq" placeholder="Поиск по сообщениям…" style="margin-bottom:6px">
+  <div class="themes" style="margin:10px 0"><button class="on" data-f="all">Все</button><button data-f="fav">Избранное <svg class="i"><use href="#i-starf"/></svg></button></div>
+  <div class="list" id="histList"></div>
+</section>
+
+<!-- НАСТРОЙКИ -->
+<section class="scr" id="sett">
+  <h3>Настройки</h3>
+  <div class="sec">Модель ИИ</div>
+  <div class="set"><label>Модель</label><select id="model"><option value="fast">Быстрая</option><option value="smart">Умная</option><option value="lite">Лёгкая</option></select></div>
+  
+  <div class="sec">Голос и язык</div>
+  <div class="set"><label>Язык</label><select id="lang"><option value="ru-RU">Русский</option><option value="kk-KZ">Қазақша</option><option value="en-US">English</option></select></div>
+  <div class="set"><label>Озвучивать ответы</label><div class="sw on" id="tts"></div></div>
+  <div class="sec">Тема оформления</div>
+  <div class="themes" id="themes"><button data-t="cosmos" class="on">Космос</button><button data-t="neon">Неон</button><button data-t="dark">Графит</button></div>
+  <div class="sec">Персонализация</div>
+  <div class="set"><label>Имя</label><input id="uname" value="Нурмухамбет" style="width:55%"></div>
+  <div class="set"><label>Стиль ответов</label><select><option>Дружелюбный</option><option>Деловой</option><option>Краткий</option></select></div>
+  <div class="sec">Безопасность</div>
+  <div class="set"><label>Блокировка по Face ID / отпечатку</label><div class="sw"></div></div>
+  <div class="set"><label>Хранить историю на устройстве</label><div class="sw on"></div></div>
+  <div class="sec">Аккаунт</div>
+  <div class="set"><label>Xpay Ultra · активен</label><button class="btn" style="padding:8px 12px">Управлять</button></div>
+  <div class="set"><label>Выйти из аккаунта</label><button class="btn" style="padding:8px 12px;background:#3a1a3a">Выйти</button></div>
+</section>
+</main>
+
+<nav class="glass" id="nav">
+  <button class="on" data-s="home"><span><svg class="i"><use href="#i-home"/></svg></span>Главная</button>
+  <button data-s="feat"><span><svg class="i"><use href="#i-planet"/></svg></span>Возможности</button>
+  <button data-s="proj"><span><svg class="i"><use href="#i-cube"/></svg></span>Проекты</button>
+  <button data-s="hist"><span><svg class="i"><use href="#i-hist"/></svg></span>История</button>
+  <button data-s="sett"><span><svg class="i"><use href="#i-gear"/></svg></span>Настройки</button>
+</nav>
+
+<!-- ЧАТ -->
+<div class="chat" id="chat">
+  <div class="ch"><div class="glass ib" id="back" style="width:44px;height:44px"><svg class="i"><use href="#i-back"/></svg></div><div class="mini" id="mini">X</div><div><b id="ctitle">Чат с ИИ</b><small id="cstate">Ожидание</small></div></div>
+  <div class="msgs" id="msgs"></div>
+  <div class="inp"><div class="glass ib" id="cmic"><svg class="i"><use href="#i-mic"/></svg></div><input id="cin" placeholder="Напишите сообщение…"><button class="btn" id="send" style="width:48px;padding:0"><svg class="i"><use href="#i-send"/></svg></button></div>
+</div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const store={get(k,d){try{const v=localStorage.getItem('xpay_'+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem('xpay_'+k,JSON.stringify(v))}catch(e){}}};
+const FEATS=[
+ {i:'<svg class="i"><use href="#i-chat"/></svg>',t:'Общение с ИИ',d:'Вопросы, идеи, советы в диалоге',p:'Расскажи, что ты умеешь'},
+ {i:'<svg class="i"><use href="#i-code"/></svg>',t:'Программирование',d:'Код, отладка, разбор ошибок',p:'Напиши функцию сортировки на Python'},
+ {i:'<svg class="i"><use href="#i-cap"/></svg>',t:'Обучение',d:'Объяснения, планы, тесты',p:'Составь план изучения английского на месяц'},
+ {i:'<svg class="i"><use href="#i-globe"/></svg>',t:'Интернет-поиск',d:'Свежие данные и источники',p:'Найди последние новости о космосе'},
+ {i:'<svg class="i"><use href="#i-chart"/></svg>',t:'Аналитика',d:'Данные, таблицы, выводы',p:'Проанализируй мои расходы за месяц'},
+ {i:'<svg class="i"><use href="#i-pal"/></svg>',t:'Создание контента',d:'Тексты, посты, сценарии',p:'Придумай пост для Instagram о технологиях'},
+ {i:'<svg class="i"><use href="#i-folder"/></svg>',t:'Работа с файлами',d:'Чтение и анализ PDF, таблиц, фото',p:''}];
+const QUICK=[['<svg class="i"><use href="#i-chat"/></svg>','Чат<br>с ИИ',0],['<svg class="i"><use href="#i-code"/></svg>','Писать<br>Код',1],['<svg class="i"><use href="#i-cap"/></svg>','Учиться<br>и Развиваться',2],['<svg class="i"><use href="#i-globe"/></svg>','Поиск<br>в Интернете',3],['<svg class="i"><use href="#i-pal"/></svg>','Создавать<br>Контент',5],['<svg class="i"><use href="#i-chart"/></svg>','Анализ<br>и Аналитика',4]];
+$('#quick').innerHTML=QUICK.map(q=>`<div class="glass tile" data-f="${q[2]}"><em>${q[0]}</em><span>${q[1]}</span><u><svg class="i"><use href="#i-chev"/></svg></u></div>`).join('');
+$('#featList').innerHTML=FEATS.map((f,i)=>`<div class="glass item" data-f="${i}"><em>${f.i}</em><div><b>${f.t}</b><small>${f.d}</small></div><u style="color:var(--mut)"><svg class="i"><use href="#i-chev"/></svg></u></div>`).join('');
+['#w1','#w2'].forEach((id,k)=>{const h=[6,10,16,26,14,34,22,44,28,12,8];(k?h.slice().reverse():h).forEach(v=>{const i=document.createElement('i');i.style.height=v+'px';$(id).appendChild(i)})});
+
+/* навигация */
+function go(s){$$('.scr').forEach(x=>x.classList.toggle('on',x.id===s));$$('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.s===s));$('main').scrollTop=0;if(s==='hist')renderHist();if(s==='proj')renderProj()}
+$('#nav').onclick=e=>{const b=e.target.closest('button');if(b)go(b.dataset.s)};
+$('#menu').onclick=()=>go('sett');
+
+/* ИИ-ядро: ожидание / мышление / ответ / голос */
+const NAMES={idle:'Ожидание',think:'Думаю…',speak:'Отвечаю',listen:'Слушаю…'};
+function setCore(s){['idle','think','speak','listen'].forEach(x=>{$('#core').classList.toggle('s-'+x,x===s);$('#mini').classList.toggle('s-'+x,x===s)});$('#state').textContent=NAMES[s];$('#cstate').textContent=NAMES[s]}
+
+/* чат */
+let hist=store.get('hist',[]),cur=null,busy=false;
+function openChat(prompt,title){cur={id:Date.now(),title:title||'Новый диалог',fav:false,msgs:[]};hist.unshift(cur);$('#ctitle').textContent=cur.title;$('#msgs').innerHTML='';addMsg('a','Привет! Я Xpay. Спрашивай — отвечу, помогу с кодом, учёбой и идеями.',true);$('#chat').classList.add('on');if(prompt)send(prompt);else $('#cin').focus()}
+function resume(id){cur=hist.find(h=>h.id===id);$('#ctitle').textContent=cur.title;$('#msgs').innerHTML='';cur.msgs.forEach(m=>addMsg(m.r,m.t,true));$('#chat').classList.add('on')}
+function addMsg(r,t,skip){const d=document.createElement('div');d.className='m '+r;d.textContent=t;$('#msgs').appendChild(d);$('#msgs').scrollTop=1e9;if(!skip&&cur){cur.msgs.push({r,t});store.set('hist',hist)}return d}
+const PROXY='https://xpay-proxy.ВАШ-АККАУНТ.workers.dev'; // адрес вашего сервера (см. worker.js)
+let pend=null;
+async function askAI(){
+ const contents=cur.msgs.map(m=>({role:m.r==='u'?'user':'model',parts:[{text:m.t}]}));
+ if(pend){contents[contents.length-1].parts.push(pend);pend=null}
+ const sys='Ты Xpay — ИИ-ассистент. Пользователя зовут '+$('#uname').value+'. Отвечай на языке пользователя, ясно и по делу.'+($('#ultra').classList.contains('on')?' Режим Ultra: давай максимально подробные и глубокие ответы.':'');
+ const r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:$('#model').value,systemInstruction:{parts:[{text:sys}]},contents})});
+ const j=await r.json().catch(()=>({}));
+ if(!r.ok)throw new Error('Ошибка ИИ ('+r.status+'): '+((j.error&&j.error.message)||'неизвестная ошибка'));
+ const t=((j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts)||[]).map(p=>p.text||'').join('');
+ return(t||'ИИ не вернул текст: ответ мог быть заблокирован фильтрами.').replace(/\*\*/g,'').replace(/^#+\s*/gm,'')}
+$('#cam').onclick=()=>$('#file').click();
+$('#file').onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader(),n=f.name,t='Файл: '+n.slice(0,24);
+ if(/^image\/|pdf$/.test(f.type)){rd.onload=()=>{pend={inlineData:{mimeType:f.type,data:rd.result.split(',')[1]}};openChat('Опиши и кратко разбери этот файл: '+n,t)};rd.readAsDataURL(f)}
+ else{rd.onload=()=>{pend={text:'Содержимое файла '+n+':\n'+String(rd.result).slice(0,60000)};openChat('Кратко разбери этот файл: '+n,t)};rd.readAsText(f)}
+ e.target.value=''};
+async function send(text){text=(text||$('#cin').value).trim();if(!text||busy)return;$('#cin').value='';busy=true;addMsg('u',text);
+ if(cur.title==='Новый диалог'){cur.title=text.slice(0,34);$('#ctitle').textContent=cur.title}
+ setCore('think');const dots=addMsg('a','…',true);await new Promise(r=>setTimeout(r,1300));
+ let ans,err=0;try{ans=await askAI()}catch(e){err=1;ans=e.name==='TypeError'?'Нет связи с ИИ. Проверьте интернет.':e.message}setCore('speak');dots.remove();const el=addMsg('a','',true);
+ for(let i=0;i<=ans.length;i+=Math.max(2,Math.ceil(ans.length/120))){el.textContent=ans.slice(0,i);$('#msgs').scrollTop=1e9;await new Promise(r=>setTimeout(r,18))}
+ el.textContent=ans;if(!err)cur.msgs.push({r:'a',t:ans});store.set('hist',hist);
+ if($('#tts').classList.contains('on')&&window.speechSynthesis){try{const u=new SpeechSynthesisUtterance(ans);u.lang=$('#lang').value;u.onend=()=>setCore('idle');speechSynthesis.speak(u);setTimeout(()=>setCore('idle'),Math.min(ans.length*70,9000))}catch(e){setCore('idle')}}else setTimeout(()=>setCore('idle'),900);
+ busy=false}
+$('#send').onclick=()=>send();$('#cin').onkeydown=e=>{if(e.key==='Enter')send()};
+$('#back').onclick=()=>{$('#chat').classList.remove('on');try{speechSynthesis.cancel()}catch(e){}setCore('idle')};
+$('#kbd').onclick=()=>openChat();$('#core').onclick=()=>openChat('Привет!','Приветствие');
+$('#quick').onclick=e=>{const t=e.target.closest('.tile');if(t){const f=FEATS[+t.dataset.f];f.p?openChat(f.p,f.t):$('#file').click()}};
+$('#featList').onclick=e=>{const t=e.target.closest('.item');if(t){const f=FEATS[+t.dataset.f];f.p?openChat(f.p,f.t):$('#file').click()}};
+
+/* голос */
+function listen(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SR){setCore('listen');$('#vtxt').textContent='Распознавание речи недоступно — открываю чат…';setTimeout(()=>{setCore('idle');$('#vtxt').textContent='Говорите или напишите сообщение…';openChat()},1200);return}
+ try{const r=new SR();r.lang=$('#lang').value;setCore('listen');$('#vtxt').textContent='Слушаю…';
+  r.onresult=e=>{const t=e.results[0][0].transcript;$('#vtxt').textContent='«'+t+'»';openChat(t,t.slice(0,30))};
+  r.onerror=()=>{setCore('idle');$('#vtxt').textContent='Нет доступа к микрофону. Разрешите его в браузере.'};
+  r.onend=()=>{if(!busy)setCore('idle')};r.start()}catch(e){setCore('idle')}}
+$('#mic').onclick=listen;$('#cmic').onclick=listen;
+
+/* проекты */
+let projs=store.get('proj',[{n:'Мобильное приложение',t:8,d:5},{n:'Сайт-портфолио',t:12,d:9},{n:'Учебный бот',t:6,d:2}]);
+function renderProj(){$('#projList').innerHTML=projs.map((p,i)=>`<div class="glass item" data-i="${i}"><em><svg class="i"><use href="#i-cube"/></svg></em><div><b>${p.n}</b><small>Задачи: ${p.d} из ${p.t} · файлов: ${p.t+2}</small><div class="prog"><i style="width:${Math.round(p.d/p.t*100)}%"></i></div></div><small>${Math.round(p.d/p.t*100)}%</small></div>`).join('')}
+$('#padd').onclick=()=>{const n=$('#pname').value.trim();if(!n)return;projs.unshift({n,t:5,d:0});$('#pname').value='';store.set('proj',projs);renderProj()};
+$('#projList').onclick=e=>{const t=e.target.closest('.item');if(!t)return;const p=projs[+t.dataset.i];p.d=p.d>=p.t?0:p.d+1;store.set('proj',projs);renderProj()};
+
+/* история */
+let hf='all';
+function renderHist(){const q=$('#hq').value.toLowerCase();const L=hist.filter(h=>(hf==='all'||h.fav)&&(!q||h.title.toLowerCase().includes(q)||h.msgs.some(m=>m.t.toLowerCase().includes(q))));
+ $('#histList').innerHTML=L.length?L.map(h=>`<div class="glass item" data-id="${h.id}"><em><svg class="i"><use href="#i-chat"/></svg></em><div><b>${h.title}</b><small>${h.msgs.length} сообщ. · ${new Date(h.id).toLocaleDateString('ru-RU')}</small></div><span data-fav="${h.id}" style="font-size:22px;color:${h.fav?'#ffc24a':'var(--mut)'}">${h.fav?'<svg class="i"><use href="#i-starf"/></svg>':'<svg class="i"><use href="#i-star"/></svg>'}</span></div>`).join(''):'<div class="glass item"><div><b>Здесь пока пусто</b><small>Начните диалог на главной — он появится в истории.</small></div></div>'}
+$('#hq').oninput=renderHist;
+$('.themes[style]').onclick=e=>{const b=e.target.closest('button');if(!b)return;hf=b.dataset.f;$$('.themes[style] button').forEach(x=>x.classList.toggle('on',x===b));renderHist()};
+$('#histList').onclick=e=>{const f=e.target.closest('[data-fav]');if(f){const h=hist.find(x=>x.id==f.dataset.fav);h.fav=!h.fav;store.set('hist',hist);renderHist();return}const t=e.target.closest('.item[data-id]');if(t)resume(+t.dataset.id)};
+
+/* настройки */
+$$('.sw').forEach(s=>s.onclick=()=>s.classList.toggle('on'));
+$('#ultra').onclick=()=>{const on=$('#ultra').classList.contains('on');$('#ultra').previousElementSibling.lastChild.textContent=''; $('#ultra').parentElement.querySelector('small').textContent=on?'Активен':'Выключен'};
+$('#themes').onclick=e=>{const b=e.target.closest('button');if(!b)return;document.body.dataset.theme=b.dataset.t;$$('#themes button').forEach(x=>x.classList.toggle('on',x===b));store.set('theme',b.dataset.t)};
+document.body.dataset.theme=store.get('theme','cosmos');$$('#themes button').forEach(x=>x.classList.toggle('on',x.dataset.t===document.body.dataset.theme));
+setCore('idle');
+</script>
+</body>
+</html>
